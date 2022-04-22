@@ -12,48 +12,29 @@ for _ in range(N - 1):
     graph[q].append((p, r))
 
 
-INF = 10e9
-distances = [[INF for _ in range(N + 1)] for _ in range(N + 1)]
-
-
-def bfs(node):
-    distance = distances[node]
-
-    que = deque()
-    que.append([node, INF])
-
-    visit = set()
-    visit.add(node)
-
+def bfs(start, k, visit):
+    que = deque([])
+    que.append(start)
+    visit[start] = True
+    count = 0
     while que:
-        node, min_weight = que.popleft()
+        node = que.popleft()
 
-        for next_node, next_weight in graph[node]:
-            if next_node in visit:
+        for next_node, weight in graph[node]:
+            if visit[next_node]:
                 continue
 
-            if next_weight < min_weight:
-                distance[next_node] = next_weight
-                que.append([next_node, next_weight])
-            else:
-                distance[next_node] = min_weight
-                que.append([next_node, min_weight])
+            if weight >= k:
+                visit[next_node] = True
+                count += 1
+                que.append(next_node)
 
-            visit.add(next_node)
+    return count
 
-
-for i in range(1, N + 1):
-    bfs(i)
 
 for _ in range(Q):
     # 정점 v에서 유사도가 k 이상인 값의 개수
     k, v = list(map(int, input().split()))
+    count = bfs(v, k, [False] * (N + 1))
 
-    distance = distances[v][1:]
-    count = 0
-
-    for d in distance:
-        if d >= k:
-            count += 1
-
-    print(count - 1)
+    print(count)
