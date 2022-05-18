@@ -1,37 +1,24 @@
 import sys
 from copy import deepcopy
-read = sys.stdin.readline
-maxAns = sys.maxsize * -1
 
-val = {'(' : 0, ')' : 0, '+' : 1, '-' : 1, '*' : 2, '/' : 2}
+sys.setrecursionlimit(10**6)
 
-def case(check, depth):
-    if depth == opNum:
-        solve(check)
-        return
+val = {"(": 0, ")": 0, "+": 1, "-": 1, "*": 2, "/": 2}
 
-    if depth > 0 and check[depth-1] == 1:
-        check[depth] = 0
-        case(check, depth+1)
-    else:
-        check[depth] = 0
-        case(check, depth+1)
-        check[depth] = 1
-        case(check, depth+1)
 
 def stackCal(string):
     def infixToPostfix(string):
         stack = []
-        ret = ''
+        ret = ""
         for s in string:
-            if s in '0123456789':
+            if s in "0123456789":
                 ret += s
-            elif s == '(':
+            elif s == "(":
                 stack.append(s)
-            elif s == ')':
+            elif s == ")":
                 while True:
                     x = stack.pop()
-                    if x == '(':
+                    if x == "(":
                         break
                     ret += x
             else:
@@ -43,63 +30,110 @@ def stackCal(string):
                 stack.append(s)
         while stack:
             ret += stack.pop()
-        ret = ret.replace('(', '').replace(')', '')
-        #print(ret)
+        ret = ret.replace("(", "").replace(")", "")
+        # print(ret)
         return ret
 
     def postfixCal(string):
         stack = []
-        for s in string: 
-            if s == '+': 
-                op2 = stack.pop() 
-                op1 = stack.pop() 
-                stack.append(op1 + op2)
-            elif s == '-': 
+        for s in string:
+            if s == "+":
                 op2 = stack.pop()
-                op1 = stack.pop() 
-                stack.append(op1 - op2)
-            elif s == '*': 
-                op2 = stack.pop() 
-                op1 = stack.pop() 
-                stack.append(op1 * op2) 
-            elif s == '/':
-                op2 = stack.pop() 
                 op1 = stack.pop()
-                stack.append(op1 / op2) 
-            else: 
+                stack.append(op1 + op2)
+            elif s == "-":
+                op2 = stack.pop()
+                op1 = stack.pop()
+                stack.append(op1 - op2)
+            elif s == "*":
+                op2 = stack.pop()
+                op1 = stack.pop()
+                stack.append(op1 * op2)
+            elif s == "/":
+                op2 = stack.pop()
+                op1 = stack.pop()
+                stack.append(op1 / op2)
+            else:
                 stack.append(int(s))
-        #print(stack[0])
         return stack[0]
-        
+
     return postfixCal(infixToPostfix(string))
 
-def solve(check):
-    global maxAns
-    string = deepcopy(calstr)
-    #print(check)
+
+def process_bracket(brackets: list):
+    string = deepcopy(expression)
+    # print(check)
     cnt = 0
     for i in range(opNum):
-        if check[i]:
-            idx = 2*i+1 + cnt
-            string = string[:idx-1] + '(' + string[idx-1:idx+2] + ')' + string[idx+2:]
+        if brackets[i]:
+            idx = 2 * i + 1 + cnt
+            string = (
+                string[: idx - 1]
+                + "("
+                + string[idx - 1 : idx + 2]
+                + ")"
+                + string[idx + 2 :]
+            )
             cnt += 2
-    #print(string)
-    ans = stackCal(string)
-    #print(ans)
-    if ans > maxAns:
-        maxAns = ans
+    # print(string)
+    # ans = stackCal(string)
+    return stackCal(string)
 
-N = int(read())
-calstr = read().replace('\n', '')
+    # temp_expression = ""
 
-originNums = [] 
-originOps = []
-for i in range(N):
-    if i%2 == 0:
-        originNums.append(int(calstr[i]))
+    # for index in range(len(opers)):
+    #     n1 = numbers[index]
+    #     n2 = numbers[index + 1]
+    #     oper = opers[index]
+
+    #     if brackets[index] == 1:
+    #         temp_expression += f"({n1}{oper}{n2})"
+
+    #     elif brackets[index] == 0:
+
+    #         if brackets[index - 1] == 1 and index != 0:
+    #             temp_expression += oper
+    #         else:
+    #             temp_expression += f"{n1}{oper}"
+    #         if index == len(opers) - 1:
+    #             temp_expression += n2
+
+    # # print(temp_expression)
+    # return stackCal(temp_expression)
+
+
+def dfs(brackets: list, index: int):
+    global max_answer
+    if index > len(opers) - 1:
+        max_answer = max(max_answer, process_bracket(brackets))
+        return
+
+    if index > 0 and brackets[index - 1] == 1:
+        brackets[index] = 0
+        dfs(brackets, index + 1)
+
     else:
-        originOps.append(calstr[i])
+        brackets[index] = 0
+        dfs(brackets, index + 1)
 
-opNum = len(originOps)
-case([0 for _ in range(opNum)], 0)
-print(maxAns)
+        brackets[index] = 1
+        dfs(brackets, index + 1)
+
+
+N = int(input())
+max_answer = sys.maxsize * -1
+expression = input()
+
+numbers = []
+opers = []
+for i in range(len(expression)):
+    e = expression[i]
+    if e in ["+", "-", "*"]:
+        opers.append(e)
+    else:
+        numbers.append(e)
+
+opNum = len(opers)
+dfs([0 for _ in range(opNum)], 0)
+
+print(max_answer)
