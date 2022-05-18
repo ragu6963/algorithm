@@ -1,5 +1,4 @@
 import sys
-from copy import deepcopy
 
 sys.setrecursionlimit(10**6)
 
@@ -61,45 +60,24 @@ def stackCal(string):
 
 
 def process_bracket(brackets: list):
-    string = deepcopy(expression)
-    # print(check)
-    cnt = 0
-    for i in range(opNum):
-        if brackets[i]:
-            idx = 2 * i + 1 + cnt
-            string = (
-                string[: idx - 1]
-                + "("
-                + string[idx - 1 : idx + 2]
-                + ")"
-                + string[idx + 2 :]
-            )
-            cnt += 2
-    # print(string)
-    # ans = stackCal(string)
-    return stackCal(string)
+    temp_expression = ""
+    for index in range(len(opers)):
+        n1 = numbers[index]
+        n2 = numbers[index + 1]
+        oper = opers[index]
 
-    # temp_expression = ""
+        if brackets[index] == 1:
+            temp_expression += f"({n1}{oper}{n2})"
 
-    # for index in range(len(opers)):
-    #     n1 = numbers[index]
-    #     n2 = numbers[index + 1]
-    #     oper = opers[index]
+        elif brackets[index] == 0:
+            if brackets[index - 1] == 1 and index != 0:
+                temp_expression += oper
+            else:
+                temp_expression += f"{n1}{oper}"
+            if index == len(opers) - 1:
+                temp_expression += n2
 
-    #     if brackets[index] == 1:
-    #         temp_expression += f"({n1}{oper}{n2})"
-
-    #     elif brackets[index] == 0:
-
-    #         if brackets[index - 1] == 1 and index != 0:
-    #             temp_expression += oper
-    #         else:
-    #             temp_expression += f"{n1}{oper}"
-    #         if index == len(opers) - 1:
-    #             temp_expression += n2
-
-    # # print(temp_expression)
-    # return stackCal(temp_expression)
+    return stackCal(temp_expression)
 
 
 def dfs(brackets: list, index: int):
@@ -124,16 +102,18 @@ N = int(input())
 max_answer = sys.maxsize * -1
 expression = input()
 
-numbers = []
-opers = []
-for i in range(len(expression)):
-    e = expression[i]
-    if e in ["+", "-", "*"]:
-        opers.append(e)
-    else:
-        numbers.append(e)
+if N == 1:
+    print(expression)
+else:
+    numbers = []
+    opers = []
+    for i in range(len(expression)):
+        e = expression[i]
+        if e in ["+", "-", "*"]:
+            opers.append(e)
+        else:
+            numbers.append(e)
 
-opNum = len(opers)
-dfs([0 for _ in range(opNum)], 0)
+    dfs([0 for _ in range(len(opers))], 0)
 
-print(max_answer)
+    print(max_answer)
