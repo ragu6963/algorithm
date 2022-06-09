@@ -6,7 +6,7 @@ dc = [1, -1, 0, 0]
 VOID = "."
 WATER = "*"
 ROCK = "X"
-START = "S"
+HEDGEHOG = "S"
 END = "D"
 
 R, C = list(map(int, input().split()))
@@ -20,7 +20,7 @@ for r in range(R):
     graph.append(list(input()))
 
     for c in range(C):
-        if graph[r][c] == START:
+        if graph[r][c] == HEDGEHOG:
             que.append((r, c, 0))
 
         if graph[r][c] == END:
@@ -28,7 +28,7 @@ for r in range(R):
 
 
 def bfs():
-    # 현재 시간
+    # 이전 시간
     t = -1
 
     while que:
@@ -38,10 +38,12 @@ def bfs():
         if (r, c) == end:
             return pre_t
 
-        # 시간이 지났을 때
+        # 이전 시간과 현재 시간이 차이가 발생하면 -> 시간이 지났다
         if pre_t != t:
             t = pre_t
+            # 물이 찰 지역 저장
             temp_waters = []
+
             for water_r in range(R):
                 for water_c in range(C):
                     if graph[water_r][water_c] == WATER:
@@ -59,6 +61,7 @@ def bfs():
 
                             temp_waters.append((nr, nc))
 
+            # 물 채우기
             for water_r, water_c in temp_waters:
                 graph[water_r][water_c] = WATER
 
@@ -75,11 +78,11 @@ def bfs():
             if graph[nr][nc] == WATER:
                 continue
 
-            if graph[nr][nc] == START:
+            if graph[nr][nc] == HEDGEHOG:
                 continue
 
             que.append((nr, nc, pre_t + 1))
-            graph[nr][nc] = START
+            graph[nr][nc] = HEDGEHOG
 
     return "KAKTUS"
 
