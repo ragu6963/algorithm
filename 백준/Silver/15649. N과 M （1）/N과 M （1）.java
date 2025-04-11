@@ -7,6 +7,8 @@ public class Main {
     static BufferedWriter bw;
     static int N;
     static int M;
+    static int[] result;
+    static HashSet<Integer> visited;
 
     public static void main(String[] args) throws Exception {
 //        br = new BufferedReader(new FileReader("input.txt"));
@@ -15,22 +17,29 @@ public class Main {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        dfs(0, "");
+        result = new int[M];
+        visited = new HashSet<>();
+        dfs(0);
 
     }
 
-    public static void dfs(int node, String route) {
-        if (route.length() == M) {
+    public static void dfs(int depth) {
+        if (depth == M) {
             StringBuilder sb = new StringBuilder();
-            for (char ch : route.toCharArray()) {
-                sb.append(ch + " ");
+            for (int i = 0; i < M; i++) {
+                sb.append(result[i]);
+                sb.append(" ");
             }
             System.out.println(sb);
+            return;
         }
 
         for (int i = 1; i < N + 1; i++) {
-            if (!route.contains(String.valueOf(i))) {
-                dfs(i, route + i);
+            if (!visited.contains(i)) {
+                result[depth] = i;
+                visited.add(i);
+                dfs(depth + 1);
+                visited.remove(i);
             }
         }
     }
