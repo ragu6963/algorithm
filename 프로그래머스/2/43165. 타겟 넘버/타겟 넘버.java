@@ -10,7 +10,6 @@ class Solution {
 
 		dfs(0, 0);
 
-		System.out.println(answer);
 		return answer;
 	}
 
