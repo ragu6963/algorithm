@@ -8,7 +8,7 @@ class Solution {
 		int[] dy = new int[]{0, 0, 1, -1};
 		int[] dx = new int[]{-1, 1, 0, 0};
 
-		Queue<int[]> queue = new LinkedList<>();
+		Queue<int[]> queue = new ArrayDeque<>();
 		boolean[][] visited = new boolean[n][m];
 
 		visited[0][0] = true;
