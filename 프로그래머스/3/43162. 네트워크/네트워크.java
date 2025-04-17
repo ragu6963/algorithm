@@ -19,7 +19,7 @@ class Solution {
     }
 
     public void bfs(int i, int[][] computers) {
-        Queue<Integer> queue = new LinkedList<>();
+        Queue<Integer> queue = new ArrayDeque<>();
         visited[i] = 1;
         queue.add(i);
         while (!queue.isEmpty()) {
